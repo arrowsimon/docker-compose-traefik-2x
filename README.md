@@ -12,4 +12,9 @@
       - "traefik.http.routers.jira.tls=true"
       - "traefik.http.routers.jira.tls.certresolver=le"
       - "traefik.http.services.jira.loadbalancer.passhostheader=true"
+
+
+touch acme.json 
+chmod 600 acme.json
+
 ```
