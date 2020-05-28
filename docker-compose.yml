@@ -1,0 +1,36 @@
+version: '3.7'
+
+networks:
+    web:
+        external: true
+     
+services:
+    traefik:
+        image: traefik:latest
+        networks:
+            - web    
+        command:
+            - "--log.level=DEBUG"
+            - "--api.insecure=true"
+            - "--providers.docker.network=web"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.docker=true"
+            - "--accesslog=true"
+            - "--metrics.prometheus=true"
+            - "--entryPoints.web.address=:80"
+            - "--entryPoints.websecure.address=:443"
+            - "--entryPoints.web.forwardedHeaders.insecure"
+            - "--entryPoints.websecure.forwardedHeaders.insecure"
+            - "--certificatesResolvers.le.acme.email=simon.ostling@arrow.com"
+            - "--certificatesResolvers.le.acme.storage=acme.json"
+            - "--certificatesResolvers.le.acme.tlsChallenge=true"
+            - "--certificatesResolvers.le.acme.httpChallenge=true"
+            - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
+        restart: always
+        ports:
+            - 80:80
+            - 443:443
+            - 8080:8080
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./acme.json:/acme.json
